@@ -49,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(result.getContents() == null) {
                 Toast.makeText(this, "Not Scanned", Toast.LENGTH_LONG).show();
             }
+            // DIAL UP, NOMOR TELEPON
+            else if (Patterns.PHONE.matcher(result.getContents()).matches()) {
+                Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + result.getContents()));
+                startActivity(intent2);}
             // WEBVIEW
             else if (Patterns.WEB_URL.matcher(result.getContents()).matches()) {
                 Intent visitUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getContents()));
@@ -67,13 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                     Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
                 }
-                // DIAL UP, NOMOR TELEPON
-                try {
-                    Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse(result.getContents()));
-                    startActivity(intent2);
-                } catch (Exception e){
-                    Toast.makeText(this, "Not Scanned", Toast.LENGTH_LONG).show();
-                }
+
+
+
                 // EMAIL
                 try {
                     Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -82,6 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent.putExtra(Intent.EXTRA_TEXT, "Body");
                 } catch (Exception e){
                     Toast.makeText(this, "Not Scanned", Toast.LENGTH_LONG).show();
+                }
+                // maps
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getContents()));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    // Menampilkan pesan error jika aplikasi Maps tidak ditemukan
                 }
                 Toast.makeText(this, "Scanned : " + result.getContents(), Toast.LENGTH_LONG).show();
             }
