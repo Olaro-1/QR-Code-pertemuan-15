@@ -53,12 +53,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else if (Patterns.PHONE.matcher(result.getContents()).matches()) {
                 Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + result.getContents()));
                 startActivity(intent2);}
+
             // WEBVIEW
             else if (Patterns.WEB_URL.matcher(result.getContents()).matches()) {
                 Intent visitUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getContents()));
                 startActivity(visitUrl);
             }
+
             else {
+                // KOORDINAT
+                String uriMaps = result.getContents();
+                String uri = "geo:" + uriMaps;
+                Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                mapsIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapsIntent);
+
                 // JSON
                 try {
 
@@ -72,24 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
                 }
 
-
-
-                // EMAIL
-                try {
-                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                    intent.setData(Uri.parse("mailto:someone@example.com"));
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-                    intent.putExtra(Intent.EXTRA_TEXT, "Body");
-                } catch (Exception e){
-                    Toast.makeText(this, "Not Scanned", Toast.LENGTH_LONG).show();
-                }
-                // maps
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getContents()));
-                    startActivity(intent);
-                } catch (Exception e) {
-                    // Menampilkan pesan error jika aplikasi Maps tidak ditemukan
-                }
                 Toast.makeText(this, "Scanned : " + result.getContents(), Toast.LENGTH_LONG).show();
             }
         } else {
