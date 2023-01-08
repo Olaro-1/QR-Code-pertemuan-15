@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             // DIAL UP, NOMOR TELEPON
             else if (Patterns.PHONE.matcher(result.getContents()).matches()) {
-                Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + result.getContents()));
+                Intent intent2 = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + result.getContents()));
                 startActivity(intent2);}
 
             // WEBVIEW
@@ -60,13 +60,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(visitUrl);
             }
 
-            else {
-                // KOORDINAT
-                String uriMaps = result.getContents();
-                String uri = "geo:" + uriMaps;
-                Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            else if (result.getContents().startsWith("mailto:")) {
+                // Barcode merupakan alamat email
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse(result.getContents()));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(emailIntent);
+                }
+            } else if (result.getContents().startsWith("geo:")) {
+                // Barcode merupakan koordinat
+                Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getContents()));
                 mapsIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapsIntent);
+            }
+
+            else {
+
+
 
                 // JSON
                 try {
